@@ -8,11 +8,23 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 70px;
 }
 
 body {
   background: #f5f7f7;
   color: #1a1a1a;
+}
+
+.snap-section {
+  height: 100vh;
+  scroll-snap-align: start;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 /* ================= NAVBAR ================= */
@@ -43,10 +55,37 @@ body {
   color: #cfdede;
   text-decoration: none;
   font-size: 15px;
+  display: inline-block;
+  transition: color 0.3s ease, transform 0.3s ease;
+  position: relative;
 }
 
-.nav-links a:hover {
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  display: block;
+  margin-top: 5px;
+  right: 0;
+  background: #5ad89b;
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+  left: 0;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
   color: #5ad89b;
+}
+
+.nav-links a.active {
+  transform: scale(1.15);
+  font-weight: 600;
 }
 
 /* ================= HERO ================= */
@@ -56,7 +95,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 80px 200px;
+  padding: 0 100px;
+  flex-direction: row; /* override column from snap */
 }
 
 .hero-text {
@@ -95,12 +135,12 @@ body {
 
 /* ================= SERVICES ================= */
 .services {
-  padding: 70px 60px;
+  padding: 0 60px;
 }
 
 .services h2 {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   font-size: 32px;
 }
 
@@ -125,6 +165,10 @@ body {
 
 .card-content {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
 }
 
 .card-content h3 {
@@ -135,60 +179,53 @@ body {
   font-size: 14px;
   color: #555;
   margin-bottom: 15px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.card-content a {
+.card-content > a:not(.btn), .actions {
   color: #1e8b6f;
   text-decoration: none;
   font-weight: 600;
+  margin-top: auto;
 }
 
-/* ================= ABOUT ================= */
-.about {
-  text-align: center;
-  padding: 70px 100px;
-  background: #ffffff;
+.card-content > a.btn {
+  margin-top: auto;
 }
 
-.about h2 {
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-
-.about p {
-  max-width: 700px;
-  margin: auto;
-  font-size: 16px;
-  color: #555;
-}
 
 /* ================= PORTFOLIO ================= */
 .page-header {
   background: #ffffff;
-  padding: 60px 80px 30px;
+  padding: 20px 80px 10px;
+  text-align: center;
 }
 
 .page-header h1 {
-  font-size: 42px;
-  margin-bottom: 10px;
+  font-size: 36px;
+  margin-bottom: 5px;
 }
 
 .page-header p {
   color: #555;
   max-width: 700px;
+  margin: 0 auto;
 }
 
 .content {
-  padding: 40px 80px 80px;
+  padding: 10px 80px 20px;
 }
 
 .section {
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 .section h2 {
-  font-size: 26px;
-  margin-bottom: 20px;
+  font-size: 22px;
+  margin-bottom: 10px;
   border-left: 4px solid #5ad89b;
   padding-left: 12px;
 }
@@ -234,7 +271,7 @@ body {
 .gallery-desc {
   max-width: 700px;
   color: #555;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .slider {
@@ -245,20 +282,22 @@ body {
 }
 
 .slides {
-  width: 600px;
-  height: 400px;
+  width: 350px;
+  height: 350px;
   position: relative;
   overflow: hidden;
   border-radius: 14px;
-  background: #ffffff;
+  background: #f5f7f7;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
 
 .slide {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   position: absolute;
+  top: 0;
+  left: 0;
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -283,26 +322,39 @@ body {
 }
 
 /* ================= PROJECTS ================= */
-main {
-  padding: 4rem 1rem;
+#projects main {
+  padding: 1rem 3rem;
   max-width: 1200px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+#projects .page-header {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 10px;
 }
 
 .project-card {
   background-color: #ffffff;
   border-radius: 20px;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
   box-shadow: 0 5px 15px rgba(0,0,0,0.05);
   align-items: center;
+  text-align: center;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .card-image {
-  flex: 0 0 40%;
-  height: 250px;
+  width: 100%;
+  height: 180px;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -316,6 +368,7 @@ main {
 .tags {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.8rem;
   margin-bottom: 1.5rem;
 }
@@ -391,4 +444,39 @@ footer {
   color: #cfdede;
   text-align: center;
   padding: 20px;
+}
+
+/* ================= MEDIA QUERIES ================= */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 15px 20px;
+    gap: 15px;
+  }
+  
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .hero {
+    flex-direction: column;
+    padding: 100px 30px;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  .hero-text {
+    max-width: 100%;
+    margin-bottom: 40px;
+  }
+  
+  .hero-text h1 {
+    font-size: 32px;
+  }
+  
+  .cards {
+    grid-template-columns: 1fr;
+  }
 }
